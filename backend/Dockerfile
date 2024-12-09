@@ -12,3 +12,4 @@ EXPOSE 8080
 
 # Comando para ejecutar la aplicación cuando se inicie el contenedor
 ENTRYPOINT ["java", "-jar", "app.jar"]
+# creadoor ALBERTO PEÑA MONDRAGON
