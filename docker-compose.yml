@@ -1,0 +1,60 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=archivodb
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backups:/backups  # Nueva carpeta para backups
+
+  schemaspy:
+    build: ./schemaspy
+    volumes:
+      - ./docs:/output
+    command: >
+      java -jar /schemaspy/schemaspy.jar
+      -t pgsql
+      -dp /schemaspy/postgresql.jar
+      -db archivodb
+      -host postgres
+      -port 5432
+      -u admin
+      -p admin123
+      -o /output
+    depends_on:
+      - postgres
+
+  pgbackups:
+    image: postgres:13
+    volumes:
+      - ./backups:/backups
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=archivodb
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin123
+    command: |
+      bash -c '
+        while true; do
+          # Backup diario
+          echo "Iniciando backup diario - $$(date)"
+          pg_dump -h $$POSTGRES_HOST -U $$POSTGRES_USER -d $$POSTGRES_DB -F c -f /backups/backup_$$(date +%Y%m%d_%H%M%S).dump
+          
+          # Limpieza de backups antiguos (mantener últimos 30 días)
+          echo "Limpiando backups antiguos..."
+          find /backups -name "backup_*.dump" -mtime +30 -delete
+          
+          # Esperar 24 horas
+          echo "Backup completado. Esperando 24 horas para el siguiente backup..."
+          sleep 86400
+        done'
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:

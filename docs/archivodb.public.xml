@@ -1,0 +1,947 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<database name="archivodb" schema="public" type="PostgreSQL - 13.18 (Debian 13.18-1.pgdg120+1)">
+   <tables>
+      <table name="access_logs" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="user_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="access_logs_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="external_requester_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="access_logs_external_requester_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="external_requesters"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="document_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="access_logs_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="documents"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="access_type" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="5" name="access_date" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="access_result" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="ip_address" nullable="true" remarks="" size="45" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="user_agent" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="details" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="access_logs_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="idx_access_logs_date" unique="false">
+            <column ascending="true" name="access_date"/>
+         </index>
+      </table>
+      <table name="buildings" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="building_id" foreignKey="storage_areas_building_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="storage_areas"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="code" nullable="false" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="name" nullable="false" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="address" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="5" name="is_active" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="6" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="buildings_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="buildings_code_key" unique="true">
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="departments" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="parent_id" foreignKey="departments_parent_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="departments"/>
+            <child column="department_id" foreignKey="documents_department_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="documents"/>
+            <child column="department_id" foreignKey="files_department_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="files"/>
+            <child column="department_id" foreignKey="requests_department_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="requests"/>
+            <child column="department_id" foreignKey="users_department_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="code" nullable="false" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="name" nullable="false" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="type" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="parent_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="departments_parent_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="departments"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="hierarchy_level" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="head_position" nullable="true" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="phone" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="email" nullable="true" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="location" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="11" name="is_active" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="12" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="13" name="updated_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="departments_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="departments_code_key" unique="true">
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="digital_access_tokens" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="request_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="digital_access_tokens_request_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="requests"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="document_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="digital_access_tokens_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="documents"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="token" nullable="false" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="4" name="valid_from" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="5" name="valid_until" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="6" name="access_count" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="max_access_count" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="8" name="is_active" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="9" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="digital_access_tokens_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="digital_access_tokens_token_key" unique="true">
+            <column ascending="true" name="token"/>
+         </index>
+      </table>
+      <table name="document_attachments" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="document_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="document_attachments_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="documents"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="name" nullable="false" remarks="" size="200" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="file_path" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="file_type" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="file_size" nullable="true" remarks="" size="19" type="int8" typeCode="-5"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="7" name="upload_date" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="uploaded_by" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="document_attachments_uploaded_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="document_attachments_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+      </table>
+      <table name="document_classifications" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="classification_id" foreignKey="files_classification_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="files"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="code" nullable="false" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="name" nullable="false" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="security_level" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="retention_policy" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="6" name="is_active" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="7" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="document_classifications_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="document_classifications_code_key" unique="true">
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="document_history" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="document_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="document_history_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="documents"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="action_type" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="3" name="action_date" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="user_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="document_history_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="details" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="previous_state" nullable="true" remarks="" size="2147483647" type="jsonb" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="new_state" nullable="true" remarks="" size="2147483647" type="jsonb" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="ip_address" nullable="true" remarks="" size="45" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="user_agent" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="document_history_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="idx_document_history_date" unique="false">
+            <column ascending="true" name="action_date"/>
+         </index>
+      </table>
+      <table name="document_relationships" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="source_document_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="document_relationships_source_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="documents"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="target_document_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="document_relationships_target_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="documents"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="relationship_type" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="created_by" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="document_relationships_created_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="6" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="document_relationships_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+      </table>
+      <table name="document_series" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="parent_id" foreignKey="document_series_parent_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="document_series"/>
+            <child column="document_series_id" foreignKey="files_document_series_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="files"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="code" nullable="false" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="name" nullable="false" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="parent_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="document_series_parent_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="document_series"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="retention_years" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="6" name="is_active" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="7" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="document_series_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="document_series_code_key" unique="true">
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="document_types" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="document_type_id" foreignKey="documents_document_type_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="documents"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="code" nullable="false" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="name" nullable="false" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="category" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="5" name="template_available" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="6" name="requires_approval" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="retention_years" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="8" name="is_active" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="9" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="10" name="updated_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="document_types_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="document_types_code_key" unique="true">
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="document_versions" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="version_id" foreignKey="ocr_processing_version_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="ocr_processing"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="document_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="document_versions_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="documents"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="version_number" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="file_path" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="file_name" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="file_type" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="file_size" nullable="true" remarks="" size="19" type="int8" typeCode="-5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="file_hash" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="8" name="is_current" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="created_by" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="document_versions_created_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="10" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="document_versions_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="unique_version" unique="true">
+            <column ascending="true" name="document_id"/>
+            <column ascending="true" name="version_number"/>
+         </index>
+      </table>
+      <table name="documents" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="document_id" foreignKey="access_logs_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="access_logs"/>
+            <child column="document_id" foreignKey="digital_access_tokens_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="digital_access_tokens"/>
+            <child column="document_id" foreignKey="document_attachments_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="document_attachments"/>
+            <child column="document_id" foreignKey="document_history_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="document_history"/>
+            <child column="source_document_id" foreignKey="document_relationships_source_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="document_relationships"/>
+            <child column="target_document_id" foreignKey="document_relationships_target_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="document_relationships"/>
+            <child column="document_id" foreignKey="document_versions_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="document_versions"/>
+            <child column="document_id" foreignKey="loans_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="loans"/>
+            <child column="document_id" foreignKey="ocr_processing_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="ocr_processing"/>
+            <child column="document_id" foreignKey="preservation_records_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="preservation_records"/>
+            <child column="document_id" foreignKey="request_documents_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="request_documents"/>
+            <child column="document_id" foreignKey="search_index_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="search_index"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="file_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="documents_file_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="files"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="document_number" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="document_type_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="documents_document_type_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="document_types"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="title" nullable="false" remarks="" size="200" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="issue_date" nullable="false" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="7" name="registration_date" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="expiration_date" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="status" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="confidentiality_level" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="author" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="documents_author_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="department_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="documents_department_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="departments"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="storage_location_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="documents_storage_location_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="storage_locations"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="physical_condition" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="folio_count" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="16" name="has_attachments" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="17" name="metadata" nullable="true" remarks="" size="2147483647" type="jsonb" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="18" name="tags" nullable="true" remarks="" size="2147483647" type="_text" typeCode="2003"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="19" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="20" name="created_by" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="documents_created_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="21" name="updated_by" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="documents_updated_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="22" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="23" name="updated_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="documents_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="documents_document_number_key" unique="true">
+            <column ascending="true" name="document_number"/>
+         </index>
+         <index name="idx_documents_metadata" unique="false">
+            <column ascending="true" name="metadata"/>
+         </index>
+         <index name="idx_documents_search" unique="false"/>
+         <index name="idx_documents_tags" unique="false">
+            <column ascending="true" name="tags"/>
+         </index>
+         <checkConstraint constraint="(((status)::text = ANY ((ARRAY['DRAFT'::character varying, 'ACTIVE'::character varying, 'ARCHIVED'::character varying, 'EXPIRED'::character varying])::text[])))" name="check_document_status"/>
+      </table>
+      <table name="external_requesters" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="external_requester_id" foreignKey="access_logs_external_requester_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="access_logs"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="requester_type_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="external_requesters_requester_type_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="requester_types"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="identity_type_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="external_requesters_identity_type_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="identity_document_types"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="identity_number" nullable="false" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="first_name" nullable="false" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="last_name" nullable="false" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="email" nullable="true" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="phone" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="address" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="organization" nullable="true" remarks="" size="200" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="student_code" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="'PENDING'::character varying" digits="0" id="11" name="verification_status" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="12" name="is_blacklisted" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="blacklist_reason" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="14" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="15" name="updated_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="external_requesters_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="unique_external_identity" unique="true">
+            <column ascending="true" name="identity_type_id"/>
+            <column ascending="true" name="identity_number"/>
+         </index>
+      </table>
+      <table name="files" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="file_id" foreignKey="documents_file_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="documents"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="file_number" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="title" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="document_series_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="files_document_series_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="document_series"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="department_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="files_department_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="departments"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="classification_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="files_classification_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="document_classifications"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="creation_date" nullable="false" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="closing_date" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="status" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="retention_end_date" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="created_by" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="files_created_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="13" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="14" name="updated_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="files_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="files_file_number_key" unique="true">
+            <column ascending="true" name="file_number"/>
+         </index>
+      </table>
+      <table name="identity_document_types" numRows="5" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="identity_type_id" foreignKey="external_requesters_identity_type_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="external_requesters"/>
+            <child column="identity_type_id" foreignKey="users_identity_type_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="code" nullable="false" remarks="" size="10" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="name" nullable="false" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="validation_regex" nullable="true" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="5" name="is_active" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="6" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="identity_document_types_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="identity_document_types_code_key" unique="true">
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="loans" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="request_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="loans_request_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="requests"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="document_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="loans_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="documents"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="loan_type" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="4" name="loan_date" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="5" name="expected_return_date" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="6" name="actual_return_date" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="status" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="returned_condition" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="return_notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="created_by" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="loans_created_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="updated_by" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="loans_updated_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="12" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="13" name="updated_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="loans_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="idx_loans_status" unique="false">
+            <column ascending="true" name="status"/>
+         </index>
+         <checkConstraint constraint="((expected_return_date &gt; loan_date))" name="check_loan_dates"/>
+      </table>
+      <table name="maintenance_schedule" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="storage_area_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="maintenance_schedule_storage_area_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="storage_areas"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="maintenance_type" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="scheduled_date" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="status" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="6" name="completed_date" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="completed_by" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="maintenance_schedule_completed_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="9" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="maintenance_schedule_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+      </table>
+      <table name="notification_templates" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="template_id" foreignKey="notifications_template_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="notifications"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="code" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="name" nullable="false" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="subject_template" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="body_template" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="format" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="variables" nullable="true" remarks="" size="2147483647" type="jsonb" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="7" name="is_active" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="8" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="notification_templates_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="notification_templates_code_key" unique="true">
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="notifications" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="template_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="notifications_template_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="notification_templates"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="recipient_type" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="recipient_id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="subject" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="message" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="notification_type" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="status" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="sent_date" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="9" name="read_date" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="error_message" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="11" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="notifications_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+      </table>
+      <table name="ocr_processing" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="document_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="ocr_processing_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="documents"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="version_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="ocr_processing_version_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="document_versions"/>
+         </column>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="3" name="processing_date" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="ocr_engine" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="ocr_version" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="language" nullable="true" remarks="" size="10" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="text_content" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="confidence_score" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="processing_time" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="status" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="error_details" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="metadata" nullable="true" remarks="" size="2147483647" type="jsonb" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="13" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="ocr_processing_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="idx_ocr_content" unique="false"/>
+      </table>
+      <table name="preservation_records" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="document_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="preservation_records_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="documents"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="2" name="inspection_date" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="inspector_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="preservation_records_inspector_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="condition_status" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="physical_condition" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="damage_description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="recommended_actions" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="priority" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="next_review_date" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="10" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="preservation_records_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+      </table>
+      <table name="request_approvals" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="request_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="request_approvals_request_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="requests"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="approval_level" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="approver_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="request_approvals_approver_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="status" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="5" name="approval_date" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="comments" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="7" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="request_approvals_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+      </table>
+      <table name="request_documents" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="request_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="request_documents_request_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="requests"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="document_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="request_documents_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="documents"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="delivery_type" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="1" digits="0" id="4" name="copies_requested" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="5" name="requires_certification" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="status" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="8" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="request_documents_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+      </table>
+      <table name="request_types" numRows="5" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="request_type_id" foreignKey="requests_request_type_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="requests"/>
+            <child column="request_type_id" foreignKey="service_fees_request_type_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="service_fees"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="code" nullable="false" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="name" nullable="false" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="4" name="requires_payment" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="5" name="requires_approval" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="1" digits="0" id="6" name="approval_levels" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="max_processing_days" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="8" name="is_active" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="9" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="request_types_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="request_types_code_key" unique="true">
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="requester_types" numRows="5" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="requester_type_id" foreignKey="external_requesters_requester_type_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="external_requesters"/>
+            <child column="requester_type_id" foreignKey="requests_requester_type_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="requests"/>
+            <child column="requester_type_id" foreignKey="service_fees_requester_type_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="service_fees"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="code" nullable="false" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="name" nullable="false" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="4" name="requires_verification" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="5" name="is_internal" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="6" name="is_active" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="7" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="requester_types_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="requester_types_code_key" unique="true">
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="requests" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="request_id" foreignKey="digital_access_tokens_request_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="digital_access_tokens"/>
+            <child column="request_id" foreignKey="loans_request_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="loans"/>
+            <child column="request_id" foreignKey="request_approvals_request_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="request_approvals"/>
+            <child column="request_id" foreignKey="request_documents_request_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="request_documents"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="request_number" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="request_type_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="requests_request_type_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="request_types"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="requester_type_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="requests_requester_type_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="requester_types"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="requester_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="department_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="requests_department_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="departments"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="subject" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="purpose" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="'NORMAL'::character varying" digits="0" id="9" name="priority" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="status" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="11" name="request_date" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="required_date" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="13" name="resolution_date" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="resolution_details" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="assigned_to" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="requests_assigned_to_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="16" name="payment_required" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="17" name="payment_amount" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="18" name="payment_status" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="19" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="20" name="updated_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="21" name="created_by" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="requests_created_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="22" name="updated_by" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="requests_updated_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="requests_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="idx_requests_dates" unique="false">
+            <column ascending="true" name="request_date"/>
+            <column ascending="true" name="resolution_date"/>
+         </index>
+         <index name="idx_requests_status" unique="false">
+            <column ascending="true" name="status"/>
+         </index>
+         <index name="requests_request_number_key" unique="true">
+            <column ascending="true" name="request_number"/>
+         </index>
+         <checkConstraint constraint="(((status)::text = ANY ((ARRAY['PENDING'::character varying, 'IN_PROCESS'::character varying, 'COMPLETED'::character varying, 'REJECTED'::character varying])::text[])))" name="check_request_status"/>
+      </table>
+      <table name="roles" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="role_id" foreignKey="user_roles_role_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="user_roles"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="code" nullable="false" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="name" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="permissions" nullable="true" remarks="" size="2147483647" type="jsonb" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="5" name="is_system_role" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="6" name="is_active" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="7" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="updated_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="roles_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="roles_code_key" unique="true">
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="search_index" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="document_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="search_index_document_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="documents"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="content_type" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="content_text" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="4" name="indexed_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="5" name="last_updated" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="search_vector" nullable="true" remarks="" size="2147483647" type="tsvector" typeCode="1111"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="search_index_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="idx_search_vector" unique="false">
+            <column ascending="true" name="search_vector"/>
+         </index>
+      </table>
+      <table name="service_fees" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="request_type_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="service_fees_request_type_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="request_types"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="requester_type_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="service_fees_requester_type_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="requester_types"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="name" nullable="false" remarks="" size="200" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="amount" nullable="false" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="'PEN'::character varying" digits="0" id="5" name="currency" nullable="true" remarks="" size="3" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="6" name="is_active" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="valid_from" nullable="false" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="valid_to" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="9" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="service_fees_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+      </table>
+      <table name="status_changes" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="entity_type" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="entity_id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="previous_status" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="new_status" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="5" name="change_date" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="changed_by" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="status_changes_changed_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="reason" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="status_changes_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+      </table>
+      <table name="storage_areas" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="storage_area_id" foreignKey="maintenance_schedule_storage_area_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="maintenance_schedule"/>
+            <child column="storage_area_id" foreignKey="storage_units_storage_area_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="storage_units"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="building_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="storage_areas_building_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="buildings"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="code" nullable="false" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="name" nullable="false" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="floor" nullable="true" remarks="" size="10" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="room_number" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="area_type" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="capacity_total" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="capacity_used" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="9" name="climate_controlled" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="temperature_range" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="humidity_range" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="13" name="is_active" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="14" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="storage_areas_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="unique_area_code" unique="true">
+            <column ascending="true" name="building_id"/>
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="storage_locations" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="storage_location_id" foreignKey="documents_storage_location_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="documents"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="storage_unit_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="storage_locations_storage_unit_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="storage_units"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="code" nullable="false" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="shelf_number" nullable="true" remarks="" size="10" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="position" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="current_usage" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="7" name="is_active" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="8" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="storage_locations_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="unique_location_code" unique="true">
+            <column ascending="true" name="storage_unit_id"/>
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="storage_units" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="storage_unit_id" foreignKey="storage_locations_storage_unit_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="storage_locations"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="storage_area_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="storage_units_storage_area_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="storage_areas"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="unit_type" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="code" nullable="false" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="capacity_total" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="capacity_used" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="dimensions" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="location_description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="9" name="is_active" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="10" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="storage_units_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="unique_unit_code" unique="true">
+            <column ascending="true" name="storage_area_id"/>
+            <column ascending="true" name="code"/>
+         </index>
+      </table>
+      <table name="system_alerts" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="alert_type" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="severity" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="message" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="details" nullable="true" remarks="" size="2147483647" type="jsonb" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="status" nullable="true" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="6" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="7" name="resolved_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="resolved_by" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="system_alerts_resolved_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="system_alerts_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+      </table>
+      <table name="system_settings" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="setting_key" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="setting_value" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="4" name="is_encrypted" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="5" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="6" name="updated_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="updated_by" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="system_settings_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="system_settings_setting_key_key" unique="true">
+            <column ascending="true" name="setting_key"/>
+         </index>
+      </table>
+      <table name="user_roles" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="user_id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="user_roles_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="role_id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="user_roles_role_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="roles"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="assigned_by" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="user_roles_assigned_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="users"/>
+         </column>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="3" name="assigned_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="4" name="is_active" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <primaryKey column="user_id" sequenceNumberInPK="1"/>
+         <primaryKey column="role_id" sequenceNumberInPK="2"/>
+         <index name="user_roles_pkey" unique="true">
+            <column ascending="true" name="user_id"/>
+            <column ascending="true" name="role_id"/>
+         </index>
+      </table>
+      <table name="users" numRows="0" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="uuid_generate_v4()" digits="0" id="0" name="id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="user_id" foreignKey="access_logs_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="access_logs"/>
+            <child column="uploaded_by" foreignKey="document_attachments_uploaded_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="document_attachments"/>
+            <child column="user_id" foreignKey="document_history_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="document_history"/>
+            <child column="created_by" foreignKey="document_relationships_created_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="document_relationships"/>
+            <child column="created_by" foreignKey="document_versions_created_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="document_versions"/>
+            <child column="author" foreignKey="documents_author_fkey" implied="false" onDeleteCascade="false" schema="public" table="documents"/>
+            <child column="created_by" foreignKey="documents_created_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="documents"/>
+            <child column="updated_by" foreignKey="documents_updated_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="documents"/>
+            <child column="created_by" foreignKey="files_created_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="files"/>
+            <child column="created_by" foreignKey="loans_created_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="loans"/>
+            <child column="updated_by" foreignKey="loans_updated_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="loans"/>
+            <child column="completed_by" foreignKey="maintenance_schedule_completed_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="maintenance_schedule"/>
+            <child column="inspector_id" foreignKey="preservation_records_inspector_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="preservation_records"/>
+            <child column="approver_id" foreignKey="request_approvals_approver_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="request_approvals"/>
+            <child column="assigned_to" foreignKey="requests_assigned_to_fkey" implied="false" onDeleteCascade="false" schema="public" table="requests"/>
+            <child column="created_by" foreignKey="requests_created_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="requests"/>
+            <child column="updated_by" foreignKey="requests_updated_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="requests"/>
+            <child column="changed_by" foreignKey="status_changes_changed_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="status_changes"/>
+            <child column="resolved_by" foreignKey="system_alerts_resolved_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="system_alerts"/>
+            <child column="assigned_by" foreignKey="user_roles_assigned_by_fkey" implied="false" onDeleteCascade="false" schema="public" table="user_roles"/>
+            <child column="user_id" foreignKey="user_roles_user_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="user_roles"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="identity_type_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="users_identity_type_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="identity_document_types"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="identity_number" nullable="false" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="username" nullable="false" remarks="" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="email" nullable="false" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="password_hash" nullable="false" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="first_name" nullable="false" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="last_name" nullable="false" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="department_id" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="id" foreignKey="users_department_id_fkey" implied="false" onDeleteCascade="false" schema="public" table="departments"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="position" nullable="true" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="phone" nullable="true" remarks="" size="20" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="11" name="is_active" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="12" name="must_change_password" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="13" name="last_login" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="0" digits="0" id="14" name="login_attempts" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="15" name="locked_until" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="CURRENT_TIMESTAMP" digits="6" id="16" name="created_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="17" name="updated_at" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="users_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="unique_identity" unique="true">
+            <column ascending="true" name="identity_type_id"/>
+            <column ascending="true" name="identity_number"/>
+         </index>
+         <index name="users_email_key" unique="true">
+            <column ascending="true" name="email"/>
+         </index>
+         <index name="users_username_key" unique="true">
+            <column ascending="true" name="username"/>
+         </index>
+      </table>
+   </tables>
+</database>
